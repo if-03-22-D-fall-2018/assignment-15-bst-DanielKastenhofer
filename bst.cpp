@@ -68,15 +68,13 @@ void add(Bst* bst, int value){
 
   if (*bst==0)
   {
-    bst = create_new_node(&(*bst), value);
-
+    *bst = create_new_node(&(*bst), value);
   }
 
   else if(value<=(*bst)->value)
   {
     if((*bst)->left == 0){
-      create_new_node(&(*bst), value);
-      (*bst)->left=newNode;
+      (*bst)->left = create_new_node(&(*bst), value);
     }
     else{
       add(&(*bst)->left, value);
@@ -86,8 +84,7 @@ void add(Bst* bst, int value){
   else if(value>(*bst)->value)
   {
     if((*bst)->right == 0){
-      create_new_node(&(*bst), value);
-      (*bst)->right=newNode;
+      (*bst)->right = create_new_node(&(*bst), value);
     }
     else{
       add(&(*bst)->right, value);
@@ -146,22 +143,17 @@ int traverse_pre_order(Bst bst, int *elements, int start){
 *** @return Number of elements found during traversal
 */
 int traverse_in_order(Bst bst, int *elements, int start){
-    if (bst != 0) {
-      elements[start] = bst->value;
-      if (get_depth(bst) > 0) {
-        start+=1;
-        if (bst->left != 0) {
-          start++;
-          traverse_in_order(bst->left, elements, start);
-        }
-        else{
-          traverse_in_order(bst, elements, start);
-        }
-        traverse_in_order(bst->right, elements, start);
-      }
-      return start;
+  if (bst != 0) {
+    if (bst->left != 0) {
+      start = traverse_in_order(bst->left, elements, start);
     }
-    return start;
+    elements[start] = bst->value;
+    start ++;
+    if (bst->right != 0) {
+      start = traverse_in_order(bst->right, elements, start);
+    }
+  }
+  return start;
 }
 
 /**
@@ -173,7 +165,18 @@ int traverse_in_order(Bst bst, int *elements, int start){
 *** @return Number of elements found during traversal
 */
 int traverse_post_order(Bst bst, int *elements, int start){
-    return 0;
+    if (bst != 0) {
+      if (bst->left != 0) {
+        start = traverse_post_order(bst->left, elements, start);
+      }
+
+      if (bst->right != 0) {
+        start = traverse_post_order(bst->right, elements, start);
+      }
+      elements[start]= bst->value;
+      start++;
+    }
+    return start;
 }
 
 /**
@@ -183,6 +186,14 @@ int traverse_post_order(Bst bst, int *elements, int start){
 *** @return true if bst1 and bst2 are equal, false otherwise
 */
 bool are_equal(Bst bst1, Bst bst2){
+    if (bst1 == 0) {
+      return bst2 == 0;
+    }
+    else if (get_depth(bst1) == get_depth(bst2)) {
+      if (bst1->value == bst2->value) {
+        return are_equal(bst1->right, bst2->right) && are_equal(bst1->left, bst2->left);
+      }
+    }
     return false;
 }
 
@@ -194,7 +205,7 @@ bool are_equal(Bst bst1, Bst bst2){
 *** branch of bst
 */
 void most_left_longest_branch(Bst bst, Bst* branch){
-
+    
 }
 
 /**
